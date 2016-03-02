@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="project|Win32">
+      <Configuration>project</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{e8a9af90-86d7-44c7-a80e-cd4fa953a21d}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='project|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='project|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='project|Win32'">
+    <NMakeOutput>project.exe</NMakeOutput>
+    <NMakePreprocessorDefinitions>
+    </NMakePreprocessorDefinitions>
+    <IncludePath>..\..\System;..\..\User;..\..\Hwa;..\..\Drivers;..\..\App;</IncludePath>
+    <NMakeBuildCommandLine>"D:\Program Files\Keil\UV4\UV4.exe " -b ..\project.uvproj -t "project" -j0 -o Build.log</NMakeBuildCommandLine>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\App\app_adc.c" />
+    <ClCompile Include="..\..\App\app_test.c" />
+    <ClCompile Include="..\..\System\sys_adc.c" />
+    <ClCompile Include="..\..\System\sys_core.c" />
+    <ClCompile Include="..\..\System\sys_cpu.c" />
+    <ClCompile Include="..\..\System\sys_task.c" />
+    <ClCompile Include="..\..\System\sys_eeprom.c" />
+    <ClCompile Include="..\..\System\sys_delay.c" />
+    <ClCompile Include="..\..\System\sys_uart.c" />
+    <ClCompile Include="..\..\User\main.c" />
+    <ClCompile Include="..\..\Hwa\hwa_mifare.c" />
+    <ClCompile Include="..\..\Hwa\hwa_eeprom.c" />
+    <ClCompile Include="..\..\Hwa\hwa_eeprom_cfg.c" />
+    <ClCompile Include="..\..\Drivers\mifare.c" />
+    <ClCompile Include="..\..\Drivers\drive_buzzer.c" />
+    <ClCompile Include="..\..\Drivers\drive_led.c" />
+    <ClCompile Include="..\..\Drivers\drive_relay.c" />
+    <ClCompile Include="..\..\App\app_brush.c" />
+    <ClCompile Include="..\..\App\app_config.c" />
+    <ClCompile Include="..\..\App\app_time.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Build.log" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
