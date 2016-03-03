@@ -42,13 +42,13 @@ void app_testLowCurrentCloseHandler1s(void)
     {
         if(u16_DisplayTime[channel])
         {
-            if(app_adcGetValue(channel) < 100               //低电流门限
+            if(app_adcGetValue(channel) < 30               //低电流门限		0~1000 ->0~4A  30约110mA
                 && u8_LowCurrentCount[channel] < 0xFF)
             {
                 u8_LowCurrentCount[channel]++;
                 if(u8_LowCurrentCount[channel] > 60)        //60->1分钟
                 {
-                    u16_DisplayTime[channel] = 0;
+            		app_timeClear(channel);
                 }
             }
             else
