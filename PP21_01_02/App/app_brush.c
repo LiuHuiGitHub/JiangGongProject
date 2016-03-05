@@ -259,6 +259,7 @@ void app_brushMemSetting(void)
 void app_brushCycle500ms(void)
 {
 	UINT8 channel;
+	UINT16 Money;
 	static UINT16 u16_BrushMoney = 0;                //当前刷卡金额
 #define BRUSH_SEL_CHANNEL_TIME             120
 	static UINT8 u8_BrushSelChannelTime = BRUSH_SEL_CHANNEL_TIME;
@@ -359,6 +360,7 @@ void app_brushCycle500ms(void)
                         else												//直接加钱
                         {
                             app_timeAddTime(channel, s_System.Money);
+							app_configWrite(MONEY_SECTOR);				//保存营业额
                             u16_BrushMoney = 0;
                             drv_buzzerNumber(1);
                             sys_delayms(2000);
@@ -376,14 +378,15 @@ void app_brushCycle500ms(void)
             }
             else															//返款
             {
-                app_timeRefundMoney(channel, &pMoney->money);
+                Money = app_timeRefundMoney(channel, &pMoney->money);
                 if (hwa_mifareWriteSector(gBuff, s_System.Sector))
                 {
                     app_timeClear(channel);
-                    if (s_Money.MoneySum > pMoney->money)
+                    if (s_Money.MoneySum > Money)
                     {
-                        s_Money.MoneySum -= pMoney->money;           //累计营业额
+                        s_Money.MoneySum -= Money;           //累计营业额
                     }
+					app_configWrite(MONEY_SECTOR);				//保存营业额
                     drv_buzzerNumber(1);
                     drv_ledRequestDisplayChannel0(pMoney->money / 100, 3000, BIT2);		//显示余额
                     drv_ledRequestDisplayChannel1(pMoney->money % 100 * 10, 3000, 0);

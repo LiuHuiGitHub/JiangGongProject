@@ -106,13 +106,14 @@ void app_timeAddTime(UINT8 channel, UINT16 money)
 //    app_timeSaveTime();
 //}
 
-BOOL app_timeRefundMoney(UINT8 channel, UINT16 *money)
+/* ·µ»Ø·µ¿î½ð¶î
+*/
+UINT16 app_timeRefundMoney(UINT8 channel, UINT16 *money)
 {
 	UINT16 Money = (UINT16)((UINT32)u16_DisplayTime[channel] * s_System.Money /10 / s_System.Time);
 	*money += Money;
-    return TRUE;
+    return Money;
 }
-
 				   
 void app_timePower1min(void)
 {

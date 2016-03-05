@@ -16,7 +16,7 @@ void app_timeDisplay500ms(void);
 void app_timePower1min(void);
 void app_timeAddTime(UINT8 channel);
 //void app_timeAddMoney(UINT8 channel, UINT16 money);
-BOOL app_timeRefundMoney(UINT8 channel, UINT16 *money);
+UINT16 app_timeRefundMoney(UINT8 channel, UINT16 *money);
 
 
 #endif

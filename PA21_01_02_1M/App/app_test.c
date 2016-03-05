@@ -10,14 +10,14 @@
 #include "stdio.h"
 
 
-UINT8 u8_LowCurrentCount[AD_CHANNEL_NUM];
+UINT8 u8_LowCurrentCount[AD_CHANNEL_NUM] = {0};
 #define OVER_CURRENT_TIME       	200     //100ms*200 = 20s
 #define OVER_CURRENT_COUNT      	4	//过流保护动作阈值
 
 UINT8 OverCurrentChannel = 0;           //过流保护循环检测通道
 UINT8 OverCurrentChannelFlag[AD_CHANNEL_NUM];       //过流保护标志
-UINT8 OverCurrentCount;                 //过流保护检测累加次数
-UINT8 OverCurrentTime;                  //过流保护检测累加时间
+UINT8 OverCurrentCount = 0;                 //过流保护检测累加次数
+UINT8 OverCurrentTime = 0;                  //过流保护检测累加时间
 
 BOOL b_TestMode = FALSE;
 

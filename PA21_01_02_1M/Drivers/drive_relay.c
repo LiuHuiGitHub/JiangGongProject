@@ -2,8 +2,8 @@
 #include "drive_relay.h"
 #include "sys_delay.h"
 
-sbit relay0 = P3 ^ 4;
-sbit relay1 = P3 ^ 5;
+sbit relay0 = P3 ^ 5;
+sbit relay1 = P3 ^ 4;
 
 void drv_relayInit(void)
 {

@@ -31,10 +31,10 @@ void sys_taskInit(void)
     len_Init();
     sys_gpioInit();
     buzzer_Init();
-    sys_uartInit();
+    sys_uartInit();	  
+    app_configInit();
     sys_tim0Init();
 	app_Show();
-    app_configInit();
     app_brushInit();
 }
 

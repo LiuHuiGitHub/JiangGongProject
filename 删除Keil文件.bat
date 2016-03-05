@@ -14,7 +14,7 @@ del *.tmp /s
 del *.__i /s
 del *.i /s
 del *.crf /s
-del *.hex /s
+::del *.hex /s
 del *.o /s
 del *.d /s
 ::del *.axf /s

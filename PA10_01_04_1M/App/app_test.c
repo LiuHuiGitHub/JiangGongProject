@@ -27,7 +27,7 @@ typedef struct
 }SYSTEM_SETTINGS_STRUCT;
 */
 
-UINT8 u8_LowCurrentCount[AD_CHANNEL_NUM];
+UINT8 u8_LowCurrentCount[AD_CHANNEL_NUM] = {0};
 code SYSTEM_SETTINGS_STRUCT s_FactorySetting = {180, 180, 9, 5, SET_FUN_POWER, 300};
 SYSTEM_SETTINGS_STRUCT s_SystemSetting;
 MONEY_SAVE_STRUCT s_moneySave;

@@ -18,7 +18,7 @@ g c b f a e d h
 //与显示相关变量
 //	0,	1,	2,	3,	4,	5,	6,	7,	8,	9,	U,	-,	空,	8. ,A, P
 code UINT8 ledCoding[] = { 0x7e, 0x60, 0xae, 0xea, 0xf0, 0xda, 0xde, 0x68, 0xfe, 0xfa, 0x76, 0x80, 0x00, 0xff, 0xfc, 0xbc };
-data UINT8 u8_ledDisBuff[CHANNEL_NUM * 3] = { 15, 14, 2, 1, 0, 3 }; // PA2101//硬件版本A21 软件版本V03
+data UINT8 u8_ledDisBuff[CHANNEL_NUM * 3] = { 15, 14, 1, 6, 0, 5 }; // PA2101//硬件版本A21 软件版本V03
 data UINT8 u8_ledDot = 0;
 static data UINT8 u8_ledIndex = 0;//从左到右为0,1,2
 static data UINT8 u8_ledReqDisBuff[CHANNEL_NUM * 3];
