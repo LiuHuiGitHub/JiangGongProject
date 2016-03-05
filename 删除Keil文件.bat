@@ -27,5 +27,13 @@ del *.iex /s
 del *.htm /s
 del *.sct /s
 del *.map /s
+del *.sbr /s
+del *.cod /s
+
+
+del *.bak /s
+del *.LiuHui /s
+
+rd Debug /S
  
 exit
