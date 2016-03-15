@@ -15,13 +15,20 @@ void app_testInit(void)
 
 void app_testHandler1ms(void)
 {
+    static UINT8 count = 0;
+    static BOOL flag = FALSE;
     if(u8_timeCount < 0xFF)
     {
         u8_timeCount++;
     }
+    else
+    {
+        u8_testBuff = 0x00;
+    }
     if(b_input != b_lastInput)
     {
         b_lastInput = b_input;
+        flag = TRUE;
         if(b_input)
         {
             u8_testBuff >>= 1;
