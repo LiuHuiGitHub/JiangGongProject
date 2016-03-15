@@ -33,7 +33,5 @@ del *.cod /s
 
 del *.bak /s
 del *.LiuHui /s
-
-rd Debug /S
  
 exit
