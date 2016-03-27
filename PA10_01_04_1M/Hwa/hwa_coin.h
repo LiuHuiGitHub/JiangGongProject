@@ -10,6 +10,9 @@ typedef enum
     PUT_CARD,
 }PUT_STATE_ENUM;
 
+extern UINT16 u16_PutInCoinSave;
+extern UINT16 u16_PutInCardSave;
+
 void hwa_coinHandler1ms(void);
 PUT_STATE_ENUM hwa_coinPutIn(void);
 void hwa_coinOff(void);

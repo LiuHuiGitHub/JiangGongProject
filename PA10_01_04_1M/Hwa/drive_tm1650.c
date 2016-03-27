@@ -2,96 +2,110 @@
 #include "sys_delay.h"		//包含_nop_()指令头文件
 #include "drive_tm1650.h"
 
-sbit SCL = P3 ^ 1;
-sbit SDA = P3 ^ 0;
+//#define sys_delayus(10) _nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();_nop_();  //宏定义
 
-#define CON_ADDR    0x81
+/********************定义控制端口**********************/
+sbit SCL=P5^5;                       //时钟线
+sbit SDA=P5^4;                       //数据线
 
-UINT16 drv_touchRead(void)
+/******************** START信号 ***********************/
+void TM1650_START()
 {
-    UINT8 bitnum, addr = CON_ADDR;
-    BOOL bit_temp;
-    UINT16 key = 0;
-
-    SDA = 0;
-    //send  addr
-    sys_delayus(5);
-    for(bitnum = 0; bitnum < 8; bitnum++)
-    {
-        SCL = 0;
-        if(addr & 0x80)
-            SDA = 1;
-        else
-            SDA = 0;
-        addr = addr << 1;
-        sys_delayus(5);
-        SCL = 1;
-        sys_delayus(5);
-    }
-
-    SDA = 1;		//release sda
-
-    //read ack
-    SCL = 0;
-    sys_delayus(5);
-    SCL = 1;
-    sys_delayus(5);
-    bit_temp = SDA;     //ACK
-    if(bit_temp)
-        return 0xFFFF;	//error occurs
-    //read key
-    for(bitnum = 0; bitnum < 16; bitnum++)
-    {
-        SCL = 0;
-        sys_delayus(5);
-        SCL = 1;
-        sys_delayus(5);
-        bit_temp = SDA;
-        if(bit_temp)
+    SCL=1;
+    SDA=1;
+    sys_delayus(10);
+    SDA=0;
+    sys_delayus(10);
+    SCL=0;
+}
+/******************** STOP信号 ************************/
+void TM1650_STOP()
+{
+    SDA=0;
+    sys_delayus(10);
+    SCL=1;
+    sys_delayus(10);
+    SDA=1;
+    sys_delayus(10);
+    SCL=0;
+    SDA=0;
+}
+/****************写1个字节给TM1650********************/
+void write_8bit( unsigned char dat)
+{
+    unsigned char i;
+    SCL=0;
+    for(i=0;i<8;i++)
         {
-            key = key << 1;
-            key = key | 0x01;
+        if(dat&0x80)
+        {
+            SDA=1;
+            sys_delayus(10);
+            SCL=1;
+            sys_delayus(10);
+            SCL=0;   
         }
         else
         {
-            key = key << 1;
+            SDA=0;
+            sys_delayus(10);
+            SCL=1;
+            sys_delayus(10);
+            SCL=0;
+        }   
+            dat<<=1;     
         }
-    }
-    SCL = 0;
-    sys_delayus(5);
-    SCL = 1;
-    sys_delayus(5);
-    bit_temp = SDA;     //NACK
-    if(!bit_temp)
-        return 0xFFFF;	//error occurs
-    SCL = 0;
-    sys_delayus(5);
-    SDA = 0;
-    sys_delayus(5);
-    SCL = 1;
-    sys_delayus(5);
-    SDA = 1;
-    
-    key ^= 0xFFFF;
-
-    return key;
+        SDA=1;          //ACK信号
+        sys_delayus(10);
+        SCL=1;
+        sys_delayus(10);
+        SCL=0;
+        sys_delayus(10);  
 }
 
-/*
-64      256     32768
-32      512     16384
-16      1024    8192
-128     2048    4096
-*/
-                                /*0  1  2  3  4  5  6  7  8  9  10  11*/
-code unsigned int keyCoding[] = {2048,16,1024,8192,32,512,16384,64,256,32768,128,4096};
-code unsigned char keyNum = sizeof(keyCoding)/sizeof(*keyCoding);
+/**********************读8bit**************************/
+unsigned char read_8bit()
+{
+    unsigned char dat,i;
+    SDA=1;
+    dat=0;
+    for(i=0;i<8;i++)
+    {
+    SCL=1;                        //时钟上沿
+    sys_delayus(10);
+    dat<<=1;
+    if(SDA)
+     dat++;
+    SCL=0;
+    sys_delayus(10);
+    }
+    SDA=0;              //ACK信号
+    sys_delayus(10);
+    SCL=1;
+    sys_delayus(10);
+    SCL=0;
+    sys_delayus(10);
+    
+    return dat ;
+
+} 
+/*******************读按键命令************************/
+unsigned char TM1650_read(void)
+{
+    unsigned char key;
+    TM1650_START();
+    write_8bit(0x49);     //读按键指令   
+    key=read_8bit();
+    TM1650_STOP();
+    return key;
+}
+code unsigned char keyCoding[] = {86,94,102,110,118,78,79,119,111,103,95,87};
+code unsigned char keyNum = sizeof(keyCoding);
 
 unsigned char drv_tm1650GetKey(void)
 {
-    unsigned int tmp;
-    unsigned char i;
-    tmp = drv_touchRead();
+    unsigned char tmp, i;;
+    tmp = TM1650_read();
     for(i=0; i<keyNum; i++)
     {
         if(tmp==keyCoding[i])
