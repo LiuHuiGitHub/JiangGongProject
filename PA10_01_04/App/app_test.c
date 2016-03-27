@@ -13,7 +13,7 @@
 #include "string.h"
 #include "stdio.h"
 
-code UINT8 c_softwareVersion[] = " 15 12 12-V04";
+code UINT8 c_softwareVersion[] = " 16 03 27-V05";
 
 /*
 typedef struct
@@ -60,9 +60,8 @@ void app_testInit(void)
     }
     if( hwa_eepromReadSector((UINT8*)&s_moneySave, MONEY_SAVE_SECTOR) == FALSE ||
         s_moneySave.CoinCount > 99999 ||
-        s_moneySave.CardCount > 99999 ||
-        s_moneySave.PutInCoinSave > 999 ||
-        s_moneySave.PutInCardSave > 999)
+        s_moneySave.CardCount > 99999
+    )
     {
         app_testClearMoney();
     }
@@ -131,6 +130,7 @@ BOOL app_testFuseTest(UINT8 channel)
     	memset(DisplayBuff, ' ', sizeof(DisplayBuff));
 	    for(TestChannel = 0; TestChannel < ALL_CHANNEL; TestChannel++)
 	    {
+            sys_relayOpen(TestChannel);
 	        app_adcOnceSetChannel(TestChannel);
 	        index = TestChannel * 3 + TestChannel / 5 + 1;
 	        SetDisplayString(index, "---");
@@ -174,6 +174,7 @@ BOOL app_testFuseTest(UINT8 channel)
 		sys_relayClose(ALL_RELAY);
         sys_delayms(500);
     	sys_relayOpen(TEST_RELAY);
+        sys_relayOpen(channel);
         sys_delayms(500);
 		app_adcOnceSetChannel(channel); 
     	memset(DisplayBuff, ' ', sizeof(DisplayBuff));
@@ -328,8 +329,8 @@ BOOL timeClearFlag = FALSE;
 BOOL E2ClearFlag = FALSE;
 UINT16 PutInWaitTimeCnt = 0;					//投币等待时间，超时后自动退出
 UINT8 SystemSettingMode = MODE_SET_NONE;
-UINT16 money;
-UINT16 testValue[10];
+UINT16 money = 0;
+UINT16 testValue[10] = {0};
 void app_testSystemSetUp100ms(void)
 {
     UINT8 KEY;
@@ -341,9 +342,10 @@ void app_testSystemSetUp100ms(void)
 
     KEY = hwa_keyGet();
 
-    if(app_coinPutIn() != PUT_NONE ||							//有投币或刷卡
+    if(app_coinPutIn() != PUT_NONE// ||							//有投币或刷卡
 //        (BrushMoneyH || BrushMoneyL)||                          //有返款型刷卡
-    	(FirstRun&&(s_moneySave.PutInCardSave+s_moneySave.PutInCoinSave)>0))//首次开机
+//    	(FirstRun&&(u16_PutInCardSave+u16_PutInCoinSave)>0)//首次开机
+    )
     {
         SystemSettingMode = MODE_PUT_PIN;
 		PutInWaitTimeCnt = PUT_IN_WAIT_TIME;
@@ -386,7 +388,7 @@ void app_testSystemSetUp100ms(void)
 //            }
 //            else
             {
-                money = s_moneySave.PutInCoinSave + s_moneySave.PutInCardSave;
+                money = u16_PutInCoinSave + u16_PutInCardSave;
             }
             if(money > 999)
             {
@@ -407,8 +409,8 @@ void app_testSystemSetUp100ms(void)
 	        if(KEY < 10 && app_testFuseTest(KEY) != FALSE)				//有按键按下且保险丝正常
             {
 	        	sys_relayOpen(KEY);
-	            s_moneySave.PutInCoinSave = 0;
-	            s_moneySave.PutInCardSave = 0;
+	            u16_PutInCoinSave = 0;
+	            u16_PutInCardSave = 0;
 	            app_testSavePutInMoney();
                 app_timeAddMoney(KEY, money);
 //                if(BrushMoneyH || BrushMoneyL)
@@ -425,8 +427,8 @@ void app_testSystemSetUp100ms(void)
             	PutInWaitTimeCnt--;
             	if(PutInWaitTimeCnt==0)
             	{
-                    s_moneySave.PutInCoinSave = 0;
-                    s_moneySave.PutInCardSave = 0;
+                    u16_PutInCoinSave = 0;
+                    u16_PutInCardSave = 0;
                     app_testSavePutInMoney();
                     SystemSettingMode = MODE_SET_NONE;
             	}
