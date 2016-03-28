@@ -119,6 +119,10 @@ void app_timeDisplay100ms(void)     //时间为0时闪烁显示通道号
             DisplayBuff[space + 1] = '-';
             DisplayBuff[space + 2] = '-';
             sys_relayClose(channel);
+            if(u16_DisplayTime[channel])
+            {
+                app_timeClear(channel);
+            }
         }
     }
 //    drv_tm1640Display(DisplayBuff);
