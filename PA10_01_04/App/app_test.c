@@ -191,16 +191,16 @@ BOOL app_testFuseTest(UINT8 channel)
         if(value >= FUSE_VALUE)
         {
             FuseState[channel] = TRUE;
-            return TRUE;
+            flag = TRUE;
         }
         else
         {
             FuseState[channel] = FALSE;
-            return FALSE;
+            flag = FALSE;
         }
 	}
-    sys_relayClose(TEST_RELAY);
-    return TRUE;
+    sys_relayClose(ALL_RELAY);
+    return flag;
 }
 
 #define OVER_CURRENT_TIME       	200     //100ms*200 = 20s
