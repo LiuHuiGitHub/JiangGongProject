@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <configuration>
+    <name>Debug</name>
+    <toolchain>
+      <name>STM8</name>
+    </toolchain>
+    <debug>1</debug>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <toolchain>
+      <name>STM8</name>
+    </toolchain>
+    <debug>0</debug>
+  </configuration>
+  <group>
+    <name>App</name>
+    <file>
+      <name>$PROJ_DIR$\..\App\app_config.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\App\app_test.c</name>
+    </file>
+  </group>
+  <group>
+    <name>Driver</name>
+    <file>
+      <name>$PROJ_DIR$\..\Driver\drive_led.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Driver\drive_scr.c</name>
+    </file>
+  </group>
+  <group>
+    <name>Hwa</name>
+    <file>
+      <name>$PROJ_DIR$\..\Hwa\hwa_eeprom.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Hwa\hwa_eeprom_cfg.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Hwa\hwa_ntc.c</name>
+    </file>
+  </group>
+  <group>
+    <name>System</name>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_adc.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_eeprom.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_iwdg.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_task.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_vector.c</name>
+    </file>
+  </group>
+</project>
+
+

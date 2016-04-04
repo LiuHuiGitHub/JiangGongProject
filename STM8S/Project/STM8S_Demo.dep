@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>140777079</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\App\app_config.c</file>
+      <file>$PROJ_DIR$\..\App\app_test.c</file>
+      <file>$PROJ_DIR$\..\Driver\drive_led.c</file>
+      <file>$PROJ_DIR$\..\System\sys_tim2.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_task.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_pwm.o</file>
+      <file>$PROJ_DIR$\..\System\sys_vector.h</file>
+      <file>$TOOLKIT_DIR$\lib\dbgstm8smd.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_iwdg.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_eeprom.o</file>
+      <file>$PROJ_DIR$\Debug\Exe\STM8S_Demo.hex</file>
+      <file>$PROJ_DIR$\..\Driver\drive_led_Cfg.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\app_test.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\hwa_ntc.o</file>
+      <file>$PROJ_DIR$\..\Hwa\hwa_eeprom.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\app_test.pbi</file>
+      <file>$PROJ_DIR$\..\System\sys_pwm.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\hwa_eeprom_cfg.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\lib\dlstm8smn.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\hwa_eeprom_cfg.o</file>
+      <file>$PROJ_DIR$\..\Hwa\hwa_eeprom_cfg.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_pwm.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_iwdg.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\app_config.o</file>
+      <file>$PROJ_DIR$\..\App\app_config.h</file>
+      <file>$TOOLKIT_DIR$\inc\iostm8s103f3.h</file>
+      <file>$PROJ_DIR$\Debug\Exe\STM8S_Demo.out</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_eeprom.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_adc.o</file>
+      <file>$PROJ_DIR$\..\System\sys_eeprom.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\hwa_eeprom.pbi</file>
+      <file>$PROJ_DIR$\..\Hwa\hwa_ntc.c</file>
+      <file>$PROJ_DIR$\..\System\include.h</file>
+      <file>$PROJ_DIR$\..\Hwa\hwa_eeprom_cfg.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\app_config.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_tim2.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_tim2.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\STM8S_Demo.pbd</file>
+      <file>$PROJ_DIR$\..\System\sys_vector.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\drive_led.pbi</file>
+      <file>$TOOLKIT_DIR$\lib\dlstm8smn.h</file>
+      <file>$PROJ_DIR$\..\Hwa\hwa_eeprom.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\drive_led.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_task.pbi</file>
+      <file>$PROJ_DIR$\..\Driver\drive_scr.c</file>
+      <file>$PROJ_DIR$\..\System\sys_eeprom.c</file>
+      <file>$PROJ_DIR$\..\System\sys_task.c</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\..\System\sys_iwdg.c</file>
+      <file>$PROJ_DIR$\..\System\sys_iwdg.h</file>
+      <file>$PROJ_DIR$\..\System\sys_adc.h</file>
+      <file>$PROJ_DIR$\..\System\sys_adc.c</file>
+      <file>$PROJ_DIR$\..\Driver\drive_led.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\hwa_eeprom.o</file>
+      <file>$PROJ_DIR$\..\Hwa\hwa_ntc.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_adc.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\drive_scr.pbi</file>
+      <file>$PROJ_DIR$\..\System\sys_tim2.c</file>
+      <file>$PROJ_DIR$\..\USER\typedef.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_vector.o</file>
+      <file>$TOOLKIT_DIR$\config\lnkstm8s103f3.icf</file>
+      <file>$PROJ_DIR$\Debug\List\STM8S_Demo.map</file>
+      <file>$TOOLKIT_DIR$\inc\io_macros.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\sys_vector.pbi</file>
+      <file>$PROJ_DIR$\..\App\app_test.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\..\Driver\drive_scr.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\drive_scr.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\hwa_ntc.pbi</file>
+      <file>$PROJ_DIR$\..\System\sys_pwm.c</file>
+      <file>$PROJ_DIR$\..\..\STM8S_Demo - &#x526F;&#x672C;\System\sys_task.c</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\..\App\app_config.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 37</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 25</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 50 69 32 62 43 19 15 5 70 51 26 72</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 26 62 15 32 19 50 70 43 51 72 69 5</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\App\app_test.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 13</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 58 66 7 62 26 31 71 35 53 54 56 15 68 27</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 35 62 53 31 54 7 27 66 56 71 15 58 68 26</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Driver\drive_led.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 42</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 45</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 12 66 56 27 62</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 27 66 56 62 12</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Exe\STM8S_Demo.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 65</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 11</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 64 25 13 45 73 57 21 14 30 10 24 4 63 20 8</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Hwa\hwa_ntc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 74</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 14</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 58 54 62</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 58 62 54</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Hwa\hwa_eeprom_cfg.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 18</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 21</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 22 26 62</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 22 62 26</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_vector.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 67</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 63</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 27 66 7</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 7 27 66</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Hwa\hwa_eeprom.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 33</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 57</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 50 69 31 62 19 43 22 32 70 51 15 5 72</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 15 62 22 31 32 19 50 70 43 51 72 69 5</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Driver\drive_scr.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 60</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 73</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 71 27 66 62</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 27 66 71 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_eeprom.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 29</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 10</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 50 72 43 32 69 31 66 51 27 62 19 5 70</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 27 66 31 62 32 19 50 70 43 51 72 69 5</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_task.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 46</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 4</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 31 71 66 62 7 27 35 53 54 56 15 58 68 26</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 27 66 35 62 53 31 54 7 56 71 15 58 68 26</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_iwdg.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 9</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 24</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 66 27 62 53</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 27 66 53 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_adc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 59</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 30</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 66 27 62 54</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 27 66 54 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 28 65</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_tim2.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 39</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 38</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 3 7 27 62 66</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\System\sys_pwm.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 23</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 6</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 66 27 62 17</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <outputs/>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+
