@@ -189,7 +189,6 @@
         </option>
         <option>
           <name>CCDefines</name>
-          <state>ENCRYPT</state>
           <state>NDEBUG</state>
         </option>
         <option>

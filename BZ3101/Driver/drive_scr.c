@@ -6,7 +6,7 @@ static UINT16 u16_vvvfScrCounter = 0;
 
 #define OUTPUT_SCR0		PA_ODR_ODR3
 #define OUTPUT_SCR1		PA_ODR_ODR2
-#define OUTPUT_LED		PD_ODR_ODR3
+#define OUTPUT_LED		PD_ODR_ODR2
 
 #define SCR_OUT_ON		1
 #define SCR_OUT_OFF		0
@@ -20,14 +20,15 @@ void drv_scrInit(void)
 	OUTPUT_LED = LED_OFF;
 }
 
-UINT8 ttt = 15;
+#define TTTT			12
+UINT8 ttt = TTTT;
 
 void drv_ledBreathing(void)
 {
 	static UINT8 dir = 0;
 	static UINT8 counter = 0;
 	static UINT8 count = 0;
-	if(counter < 10)
+	if(counter < TTTT)
 	{
 		counter++;
 	}
@@ -35,7 +36,7 @@ void drv_ledBreathing(void)
 	{
 		counter = 0;
 	}
-	if(++count >= 75)
+	if(++count >= 100)
 	{
 		count = 0;
 		if(dir == 0)
@@ -47,7 +48,7 @@ void drv_ledBreathing(void)
 		}
 		else
 		{
-			if(++ttt >= 10)
+			if(++ttt >= TTTT)
 			{
 				dir = 0;
 			}

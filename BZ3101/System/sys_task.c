@@ -23,15 +23,14 @@ void sys_taskGpioInit(void)
     PC_CR2 &= (UINT8)(~0xFF);
 	PC_ODR = 0x00;
 	
-	PD_DDR_DDR2 = 0;
-	PD_CR1_C12 = 0;
-	PD_CR2_C22 = 0;
+	PD_DDR_DDR3 = 0;
+	PD_CR1_C13 = 0;
+	PD_CR2_C23 = 0;
 	
-	PD_DDR |= 0xF9;
-	PD_CR1 |= 0xF9;
-	PD_CR2 &= (UINT8)(~0xF9);
-	PD_ODR = 0x08;
-	
+	PD_DDR |= 0xF6;
+	PD_CR1 |= 0xF6;
+	PD_CR2 &= (UINT8)(~0xF6);
+	PD_ODR = 0x00;
 }
 
 void sys_taskInit(void)

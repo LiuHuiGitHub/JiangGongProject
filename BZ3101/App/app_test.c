@@ -6,6 +6,7 @@ static BOOL b_keyTimeSetOld = FALSE;
 static BOOL b_keyTempSetOld = FALSE;
 
 static UINT16 u16_workTimeCounter = 0;
+UINT8 u8_workTime = 0;
 
 enum
 {
@@ -13,7 +14,7 @@ enum
 	NTC_OVER_TEMP,
 	NTC_OPEN_CIRCUIT,
 	NTC_SHORT_CIRCUIT,
-}e_ntcState = NTC_NORMAL;
+}e_ntcState = NTC_NORMAL, e_ntcStateNew = NTC_NORMAL;
 
 enum
 {
@@ -32,6 +33,7 @@ enum
 	WORK_FULL,
 	WORK_VVVF,
 	WORK_VVVF_OFF,
+	WORK_OVER_TEMP,
 }e_workState = WORK_OFF;
 
 enum
@@ -74,15 +76,66 @@ void eventHandler(void)
 	}
 }
 
-UINT8 u8_workTime = 0;
-//
+#ifdef DEBUG
+#define TIME_45_MIN			(45*10)
+#define TIME_15_MIN			(15*10)
+#define WORK_TIME			((UINT16)u8_workTime*10)
+#define SHENGXIAWORK_TIME	(u8_workTime-(UINT8)(u16_workTimeCounter/10))
+#else
 #define TIME_45_MIN			(45*60*10)
 #define TIME_15_MIN			(15*60*10)
 #define WORK_TIME			((UINT16)u8_workTime*60*10)
+#define SHENGXIAWORK_TIME	(u8_workTime-(UINT8)(u16_workTimeCounter/60/10))
+#endif
 
-//#define TIME_45_MIN			(45*10)
-//#define TIME_15_MIN			(15*10)
-//#define WORK_TIME			((UINT16)u8_workTime*10)
+void faultHandler(UINT8 temp)
+{
+	static UINT8 u8_errorCount = 0;
+	if(temp == 0)
+	{
+		if(++u8_errorCount > 6)
+		{
+			e_mode = MODE_FAULT;
+			e_ntcState = NTC_OPEN_CIRCUIT;
+		}
+	}
+	else if(temp >= 99)
+	{
+		if(++u8_errorCount > 6)
+		{
+			e_mode = MODE_FAULT;
+			e_ntcState = NTC_SHORT_CIRCUIT;
+		}
+	}
+	else
+	{
+		u8_errorCount = 0;
+	}
+}
+
+void setTimeSave(void)
+{
+	u16_workTimeCounter = 0;
+	u8_workTime = u8_setTime;
+
+	if(u8_setTime > 30)
+	{
+		if(u8_setTime != s_System.Time)
+		{
+			s_System.Time = u8_setTime;
+			app_configWrite();
+		}
+	}
+}
+
+void setTempSave(void)
+{
+	if(s_System.Temp != u8_setTemp)
+	{
+		s_System.Temp = u8_setTemp;
+		app_configWrite();
+	}
+}
 
 void app_testHandler100ms(void)
 {
@@ -92,11 +145,44 @@ void app_testHandler100ms(void)
 	static UINT8 b_settingSaveFlag = FALSE;
 	static UINT16 u16_agingTestTimeCounter = TIME_45_MIN;
 	static BOOL b_agingTestFlag = 0;
-	UINT8 temp = hwa_ntcGetTemp();
+	static UINT8 u8_keyTimeDelay = 0;
+	static UINT8 u8_keyTempDelay = 0;
+	UINT8 temp = hwa_ntcGetTemp();				//经过消抖的温度
+	
+	if(u8_keyTimeDelay)
+	{
+		u8_keyTimeDelay--;
+	}
+	if(u8_keyTempDelay)
+	{
+		u8_keyTempDelay--;
+	}
+	
 	eventHandler();
 
+	faultHandler(temp);
+	
 	switch(e_mode)
 	{
+		case MODE_FAULT:
+			switch(e_ntcState)
+			{
+				case NTC_SHORT_CIRCUIT:
+					drv_ledRequest(0xFF, 0xE1);
+					break;
+					
+				case NTC_OPEN_CIRCUIT:
+					drv_ledRequest(0xFF, 0xE2);
+					break;
+					
+				default:
+					e_mode = MODE_STANDBY;
+					e_ntcState = NTC_NORMAL;
+					break;
+			}
+			drv_scrRequest(SCR_OFF);
+			break;
+			
 		case MODE_POWER_ON:
 			if(u8_powerOnDelay)
 			{
@@ -127,34 +213,35 @@ void app_testHandler100ms(void)
 			drv_scrRequest(SCR_OFF);
 			u8_ledDisBuff[0] = 0;	//O
 			u8_ledDisBuff[1] = 15;	//F
-			if(e_keyEvent == KEY_EVENT_START)
+			
+			if(temp > 50)
+			{
+				drv_ledRequest(0xFF, 0xE3);
+			}
+			else if(e_keyEvent == KEY_EVENT_START)
 			{
 				drv_ledRequest(3, u8_setTemp);
 				e_mode = MODE_WORK;
-				u16_workTimeCounter = 0;
+				e_workState = WORK_OFF;
+				
 				u8_workTime = s_System.Time;
+				u16_workTimeCounter = 0;
+			}
+			else
+			{
+				drv_ledRequest(0, 0);
 			}
 			
-			if(temp == 0)
-			{
-				e_mode = MODE_FAULT;
-				e_ntcState = NTC_SHORT_CIRCUIT;
-			}
-			else if(temp == 99)
-			{
-				e_mode = MODE_FAULT;
-				e_ntcState = NTC_OPEN_CIRCUIT;
-			}
-			else if(temp >= 50)
-			{
-				e_mode = MODE_FAULT;
-				e_ntcState = NTC_OVER_TEMP;
-			}
 			break;
 			
 		case MODE_WORK:
 			u8_ledDisBuff[0] = temp/10;
 			u8_ledDisBuff[1] = temp%10;
+
+			if(temp > 50)
+			{
+				e_workState = WORK_OVER_TEMP;
+			}
 			switch(e_workState)
 			{
 				case WORK_OFF:
@@ -163,13 +250,17 @@ void app_testHandler100ms(void)
 					{
 						e_workState = WORK_FULL;
 					}
+					else
+					{
+						e_workState = WORK_VVVF_OFF;
+					}
 					break;
 					
 				case WORK_FULL:
 					drv_scrRequest(SCR_FULL);
 					if(temp >= u8_setTemp)
 					{
-						e_workState = WORK_VVVF;
+						e_workState = WORK_VVVF_OFF;
 					}
 					break;
 					
@@ -192,6 +283,19 @@ void app_testHandler100ms(void)
 						e_workState = WORK_VVVF;
 					}
 					break;
+
+				case WORK_OVER_TEMP:
+					if(temp < 50)
+					{
+						drv_ledRequest(0, 0);
+						e_mode = MODE_STANDBY;
+					}
+					else
+					{
+						drv_scrRequest(SCR_OFF);
+						drv_ledRequest(0xFF, 0xE3);
+					}
+					break;
 					
 				default:
 					e_workState = WORK_OFF;
@@ -201,40 +305,44 @@ void app_testHandler100ms(void)
 			if(e_keyEvent == KEY_EVENT_START)
 			{
 				e_mode = MODE_STANDBY;
+				drv_ledRequest(0, 0);
 			}
-			if(e_keyEvent == KEY_EVENT_TIME_SET)
+			else if(e_keyEvent == KEY_EVENT_TIME_SET)
 			{
-				drv_ledRequest(3, u8_setTime);
-				e_modeOld = e_mode;
-				e_mode = MODE_TIME_SET;
+				if(u8_keyTimeDelay)
+				{
+					u8_keyTimeDelay = 0;
+					e_modeOld = e_mode;
+					b_settingSaveFlag = TRUE;
+					e_mode = MODE_TIME_SET;
+				}
+				else
+				{
+					u8_keyTimeDelay = 30;
+					drv_ledRequest(3, SHENGXIAWORK_TIME);
+				}
 			}
 			else if(e_keyEvent == KEY_EVENT_TEMP_SET)
 			{
-				drv_ledRequest(3, u8_setTemp);
-				e_modeOld = e_mode;
-				e_mode = MODE_TEMP_SET;
-			}
-			
-			if(temp == 0)
-			{
-				e_mode = MODE_FAULT;
-				e_ntcState = NTC_SHORT_CIRCUIT;
-			}
-			else if(temp == 99)
-			{
-				e_mode = MODE_FAULT;
-				e_ntcState = NTC_OPEN_CIRCUIT;
-			}
-			else if(temp >= 50)
-			{
-				e_mode = MODE_FAULT;
-				e_ntcState = NTC_OVER_TEMP;
+				if(u8_keyTempDelay)
+				{
+					u8_keyTempDelay = 0;
+					e_modeOld = e_mode;
+					b_settingSaveFlag = TRUE;
+					e_mode = MODE_TEMP_SET;
+				}
+				else
+				{
+					u8_keyTempDelay = 30;
+					drv_ledRequest(3, u8_setTemp);
+				}
 			}
 			
 			if(++u16_workTimeCounter >= WORK_TIME)
 			{
 				e_mode = MODE_STANDBY;
 			}
+			
 			break;
 			
 		case MODE_TIME_SET:
@@ -247,12 +355,7 @@ void app_testHandler100ms(void)
 				u8_keyLongEnterCounter = 0;
 				u8_keyEnterTimeCounter = 0;
 				e_mode = MODE_TEMP_SET;
-				u8_workTime = u8_setTime;
-				if(u8_setTime >= 30)
-				{
-					s_System.Time = u8_setTime;
-					app_configWrite();
-				}
+				setTimeSave();
 				drv_ledRequest(3, u8_setTemp);
 			}
 			else if(b_keyTimeSet)
@@ -292,19 +395,10 @@ void app_testHandler100ms(void)
 			}
 			else if(drv_ledGetRequest() == 0)
 			{
-				u8_workTime = u8_setTime;
-				if(u8_setTime >= 30)
-				{
-					s_System.Time = u8_setTime;
-					app_configWrite();
-				}
+				setTimeSave();
 				e_mode = e_modeOld;
 			}
 			
-			if(++u16_workTimeCounter >= WORK_TIME)
-			{
-				e_mode = MODE_STANDBY;
-			}
 			break;
 			
 		case MODE_TEMP_SET:
@@ -317,8 +411,7 @@ void app_testHandler100ms(void)
 				u8_keyLongEnterCounter = 0;
 				u8_keyEnterTimeCounter = 0;
 				e_mode = MODE_TIME_SET;
-				s_System.Temp = u8_setTemp;
-				app_configWrite();
+				setTempSave();
 				drv_ledRequest(3, u8_setTime);
 			}
 			else if(b_keyTempSet)
@@ -358,15 +451,10 @@ void app_testHandler100ms(void)
 			}
 			else if(drv_ledGetRequest() == 0)
 			{
-				s_System.Temp = u8_setTemp;
-				app_configWrite();
+				setTempSave();
 				e_mode = e_modeOld;
 			}
 			
-			if(++u16_workTimeCounter >= WORK_TIME)
-			{
-				e_mode = MODE_STANDBY;
-			}
 			break;
 		
 		case MODE_AGING_TEST:
@@ -394,24 +482,15 @@ void app_testHandler100ms(void)
 					}
 				}
 			}
-			if(temp == 0)
+			
+			if(temp > 50)
 			{
-				drv_ledRequest(0xFF, 0xE1);
 				drv_scrRequest(SCR_TEST_OFF);
-			}
-			else if(temp == 99)
-			{
-				drv_ledRequest(0xFF, 0xE2);
-				drv_scrRequest(SCR_TEST_OFF);
-			}
-			else if(temp >= 50)
-			{
 				drv_ledRequest(0xFF, 0xE3);
-				drv_scrRequest(SCR_TEST_OFF);
 			}
 			else
 			{
-				if(b_agingTestFlag == 0)
+				if(b_agingTestFlag == 0 && temp < 48)
 				{
 					drv_scrRequest(SCR_TEST_FULL);
 				}
@@ -425,45 +504,6 @@ void app_testHandler100ms(void)
 			{
 				drv_ledRequest(0, temp);
 				e_mode = MODE_STANDBY;
-			}
-			break;
-			
-		case MODE_FAULT:
-			drv_scrRequest(SCR_OFF);
-			switch(e_ntcState)
-			{
-				case NTC_NORMAL:
-					e_mode = MODE_STANDBY;
-					drv_ledRequest(0, 0xE3);
-					break;
-					
-				case NTC_SHORT_CIRCUIT:
-					drv_ledRequest(0xFF, 0xE1);
-					if(temp > 0)
-					{
-						e_ntcState = NTC_NORMAL;
-					}
-					break;
-					
-				case NTC_OPEN_CIRCUIT:
-					if(temp < 99)
-					{
-						e_ntcState = NTC_NORMAL;
-					}
-					drv_ledRequest(0xFF, 0xE2);
-					break;
-					
-				case NTC_OVER_TEMP:
-					drv_ledRequest(0xFF, 0xE3);
-					if(temp < 49)
-					{
-						e_ntcState = NTC_NORMAL;
-					}
-					break;
-				
-				default:
-					e_ntcState = NTC_NORMAL;
-					break;
 			}
 			break;
 			

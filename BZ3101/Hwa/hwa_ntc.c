@@ -121,7 +121,7 @@ void hwa_ntcHandler500ms(void)
 	UINT16 u16_thresholdL;
 	UINT16 u16_adValue;
 	UINT8 u8_tempNew;
-	u16_adValue = sys_adcValue(3);
+	u16_adValue = sys_adcValue(4);
 	for(u8_tempNew=0; u8_tempNew< NUM_OF_TEMP; u8_tempNew++)
 	{
 		if(u16_adValue < c_u16_ntcTable[u8_tempNew])
@@ -141,7 +141,7 @@ void hwa_ntcHandler500ms(void)
 	{
 		if(u8_tempNew > u8_tempOld)
 		{
-			u16_thresholdH = (c_u16_ntcTable[u8_tempOld+1]-c_u16_ntcTable[u8_tempOld])/3+c_u16_ntcTable[u8_tempOld];
+			u16_thresholdH = (c_u16_ntcTable[u8_tempOld+1]-c_u16_ntcTable[u8_tempOld])/4+c_u16_ntcTable[u8_tempOld];
 			if(u16_adValue >= u16_thresholdH)
 			{
 				u8_tempOld = u8_tempNew;
@@ -153,7 +153,7 @@ void hwa_ntcHandler500ms(void)
 		}
 		else if(u8_tempNew < u8_tempOld)
 		{
-			u16_thresholdL = c_u16_ntcTable[u8_tempNew]-(c_u16_ntcTable[u8_tempNew]-c_u16_ntcTable[u8_tempNew-1])/3;
+			u16_thresholdL = c_u16_ntcTable[u8_tempNew]-(c_u16_ntcTable[u8_tempNew]-c_u16_ntcTable[u8_tempNew-1])/4;
 			if(u16_adValue <= u16_thresholdL)
 			{
 				u8_tempOld = u8_tempNew;
