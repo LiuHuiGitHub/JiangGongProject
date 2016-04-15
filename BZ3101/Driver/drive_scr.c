@@ -1,12 +1,12 @@
 #include "iostm8s103f3.h"
 #include "drive_scr.h"
+#include "sys_pwm.h"
 
 SCR_STATE e_scrState = SCR_OFF;
 static UINT16 u16_vvvfScrCounter = 0;
 
 #define OUTPUT_SCR0		PA_ODR_ODR3
 #define OUTPUT_SCR1		PA_ODR_ODR2
-#define OUTPUT_LED		PD_ODR_ODR2
 
 #define SCR_OUT_ON		1
 #define SCR_OUT_OFF		0
@@ -17,10 +17,10 @@ void drv_scrInit(void)
 {
 	OUTPUT_SCR0 = SCR_OUT_OFF;
 	OUTPUT_SCR1 = SCR_OUT_OFF;
-	OUTPUT_LED = LED_OFF;
+	sys_pwm2Channel3Set(0x00);
 }
 
-#define TTTT			12
+#define TTTT			100
 UINT8 ttt = TTTT;
 
 void drv_ledBreathing(void)
@@ -36,7 +36,7 @@ void drv_ledBreathing(void)
 	{
 		counter = 0;
 	}
-	if(++count >= 100)
+	if(++count >= 25)
 	{
 		count = 0;
 		if(dir == 0)
@@ -54,15 +54,7 @@ void drv_ledBreathing(void)
 			}
 		}
 	}
-	
-	if(counter > ttt)
-	{
-		OUTPUT_LED = LED_ON;
-	}
-	else
-	{
-		OUTPUT_LED = LED_OFF;
-	}
+	sys_pwm2Channel3Set(ttt);
 }
 
 void drv_scrHandler2ms(void)
@@ -71,7 +63,7 @@ void drv_scrHandler2ms(void)
 	{
 		OUTPUT_SCR0 = SCR_OUT_ON;
 		OUTPUT_SCR1 = SCR_OUT_ON;
-		OUTPUT_LED = LED_OFF;
+		sys_pwm2Channel3Set(0);
 	}
 	else if(e_scrState == SCR_VVVF)
 	{
@@ -104,13 +96,13 @@ void drv_scrHandler2ms(void)
 	{
 		OUTPUT_SCR0 = SCR_OUT_OFF;
 		OUTPUT_SCR1 = SCR_OUT_OFF;
-		OUTPUT_LED = LED_OFF;
+		sys_pwm2Channel3Set(0);
 	}
 	else
 	{
 		OUTPUT_SCR0 = SCR_OUT_OFF;
 		OUTPUT_SCR1 = SCR_OUT_OFF;
-		OUTPUT_LED = LED_OFF;
+		sys_pwm2Channel3Set(0);
 	}
 }
 

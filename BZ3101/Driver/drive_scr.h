@@ -16,5 +16,6 @@ typedef enum
 void drv_scrInit(void);
 void drv_scrHandler2ms(void);
 void drv_scrRequest(SCR_STATE state);
+void drv_ledBreathing(void);
 
 #endif

@@ -499,11 +499,12 @@ void app_testHandler100ms(void)
 					drv_scrRequest(SCR_TEST_OFF);
 				}
 				drv_ledRequest(0xFF, temp);
-			}
-			if(e_keyEvent == KEY_EVENT_START)
-			{
-				drv_ledRequest(0, temp);
-				e_mode = MODE_STANDBY;
+				
+				if(e_keyEvent == KEY_EVENT_START)
+				{
+					drv_ledRequest(0, temp);
+					e_mode = MODE_STANDBY;
+				}
 			}
 			break;
 			

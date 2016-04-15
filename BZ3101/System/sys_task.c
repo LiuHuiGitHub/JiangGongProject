@@ -55,7 +55,8 @@ __interrupt void TIM4_UPD_OVF_IRQHandler(void)
 void sys_taskHandler2ms(void)
 {
 	drv_ledHandler2ms();
-	drv_scrHandler2ms();
+	//drv_scrHandler2ms();
+	drv_ledBreathing();
 }
 
 int main(void)
@@ -64,6 +65,7 @@ int main(void)
     sys_taskGpioInit();
 	drv_scrInit();
 	drv_ledInit();
+	sys_pwmInit();
 	sys_iwdgInit();
     sys_taskInit();
 	hwa_ntcInit();
