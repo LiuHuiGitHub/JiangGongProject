@@ -20,7 +20,7 @@ CONST UINT8 ledCoding[] =
 	(UINT8)(~SEG_H),
 };
 
-UINT8 u8_ledRequestCounter = 0;
+UINT16 u16_ledRequestCounter = 0;
 UINT8 u8_ledRequestCount = 0;
 UINT8 u8_ledRequestData[2] = {0};
 
@@ -39,26 +39,15 @@ void drv_ledInit(void)
 }
 
 /* LED∂ØÃ¨œ‘ æ */
-void drv_ledHandler2ms(void)
+void drv_ledHandler1ms(void)
 {
 	UINT8 coding = ledCoding[19];
 	LED_CS0 = SEG_OFF;
 	LED_CS1 = SEG_OFF;
 	u8_ledIndex++;
-	u8_ledIndex %= 4;
+	u8_ledIndex %= 20;
 	
-//	if (u8_ledDot & (1 << u8_ledIndex))//show dot
-//	{
-//        if(SEG_CLASS)
-//        {
-//            SEG_PORT |= SEG_PORT_H;
-//        }
-//        else
-//        {
-//            SEG_PORT &= ~SEG_PORT_H;
-//        }
-//	}
-	if (u8_ledIndex == 0)
+	if (u8_ledIndex == 0 || u8_ledIndex == 4 || u8_ledIndex == 6 || u8_ledIndex == 8 || u8_ledIndex == 10 || u8_ledIndex == 12 || u8_ledIndex == 14 || u8_ledIndex == 16 || u8_ledIndex == 18)
 	{
 		if(u8_ledRequestCount == 0)
 		{
@@ -66,11 +55,11 @@ void drv_ledHandler2ms(void)
 		}
 		else
 		{
-			if(u8_ledRequestCounter < 77)
+			if(u16_ledRequestCounter < 280)
 			{
 				coding = ledCoding[u8_ledRequestData[0]];
 			}
-			else if(u8_ledRequestCounter < 125)
+			else if(u16_ledRequestCounter < 500)
 			{
 				coding = ledCoding[19];
 			}
@@ -82,29 +71,39 @@ void drv_ledHandler2ms(void)
 		PD_ODR_ODR5 = coding>>2;
 		PC_ODR_ODR7 = coding>>1;
 		PC_ODR_ODR6 = coding>>0;
+		if(u8_ledIndex == 0)
+		{
+			PC_ODR_ODR4 = 1;
+			PC_ODR_ODR5 = 1;
+			PD_ODR_ODR6 = 1;
+			PA_ODR_ODR1 = coding>>3;
+			PD_ODR_ODR5 = 1;
+			PC_ODR_ODR7 = 1;
+			PC_ODR_ODR6 = 1;
+		}
 		LED_CS0 = SEG_ON;
 	}
-	else if(u8_ledIndex == 1)
+	else if(u8_ledIndex == 1 || u8_ledIndex == 5 || u8_ledIndex == 7 || u8_ledIndex == 9 || u8_ledIndex == 11 || u8_ledIndex == 13 || u8_ledIndex == 15 || u8_ledIndex == 17 || u8_ledIndex == 19)
 	{
 		if(u8_ledRequestCount == 0)
 		{
-			u8_ledRequestCounter = 0;
+			u16_ledRequestCounter = 0;
 			coding = ledCoding[u8_ledDisBuff[1]];
 		}
 		else
 		{
-			u8_ledRequestCounter++;
-			if(u8_ledRequestCounter < 77)
+			u16_ledRequestCounter++;
+			if(u16_ledRequestCounter < 280)
 			{
 				coding = ledCoding[u8_ledRequestData[1]];
 			}
-			else if(u8_ledRequestCounter < 125)
+			else if(u16_ledRequestCounter < 500)
 			{
 				coding = ledCoding[19];
 			}
 			else
 			{
-				u8_ledRequestCounter = 0;
+				u16_ledRequestCounter = 0;
 				if(u8_ledRequestCount != 0xFF)
 				{
 					u8_ledRequestCount--;
@@ -118,6 +117,16 @@ void drv_ledHandler2ms(void)
 		PD_ODR_ODR5 = coding>>2;
 		PC_ODR_ODR7 = coding>>1;
 		PC_ODR_ODR6 = coding>>0;
+		if(u8_ledIndex == 1)
+		{
+			PC_ODR_ODR4 = 1;
+			PC_ODR_ODR5 = 1;
+			PD_ODR_ODR6 = 1;
+			PA_ODR_ODR1 = coding>>3;
+			PD_ODR_ODR5 = 1;
+			PC_ODR_ODR7 = 1;
+			PC_ODR_ODR6 = 1;
+		}
 		LED_CS1 = SEG_ON;
 	}
 	else if (u8_ledIndex == 2)
@@ -142,7 +151,7 @@ void drv_ledHandler2ms(void)
 		PC_CR1_C17 = 1;
 		PC_CR2_C27 = 0;
 	}
-	else
+	else if (u8_ledIndex == 3)
 	{
 		if(PC_IDR_IDR7 == 0)
 		{
@@ -188,7 +197,7 @@ void drv_ledRequest(UINT8 count, UINT8 n)
 	u8_ledRequestCount = count;
 	if(count != 0xFF)
 	{
-		u8_ledRequestCounter = 0;
+		u16_ledRequestCounter = 0;
 	}
 	if(n == 0xE1)
 	{

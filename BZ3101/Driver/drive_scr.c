@@ -28,6 +28,7 @@ void drv_ledBreathing(void)
 	static UINT8 dir = 0;
 	static UINT8 counter = 0;
 	static UINT8 count = 0;
+	UINT8 cccc = 20;
 	if(counter < TTTT)
 	{
 		counter++;
@@ -36,7 +37,23 @@ void drv_ledBreathing(void)
 	{
 		counter = 0;
 	}
-	if(++count >= 25)
+//	if(ttt>95)
+//	{
+//		cccc = 100;
+//	}
+//	else if(ttt>75)
+//	{
+//		cccc = 80;
+//	}
+//	else if(ttt>45)
+//	{
+//		cccc = 50;
+//	}
+//	else
+//	{
+//		cccc = 35;
+//	}
+	if(++count >= cccc)
 	{
 		count = 0;
 		if(dir == 0)
@@ -57,7 +74,7 @@ void drv_ledBreathing(void)
 	sys_pwm2Channel3Set(ttt);
 }
 
-void drv_scrHandler2ms(void)
+void drv_scrHandler1ms(void)
 {
 	if(e_scrState == SCR_FULL)
 	{
@@ -85,18 +102,6 @@ void drv_scrHandler2ms(void)
 		OUTPUT_SCR0 = SCR_OUT_ON;
 		OUTPUT_SCR1 = SCR_OUT_OFF;
 		drv_ledBreathing();
-	}
-	else if(e_scrState == SCR_TEST_FULL)
-	{
-		OUTPUT_SCR0 = SCR_OUT_ON;
-		OUTPUT_SCR1 = SCR_OUT_ON;
-		drv_ledBreathing();
-	}
-	else if(e_scrState == SCR_TEST_OFF)
-	{
-		OUTPUT_SCR0 = SCR_OUT_OFF;
-		OUTPUT_SCR1 = SCR_OUT_OFF;
-		sys_pwm2Channel3Set(0);
 	}
 	else
 	{

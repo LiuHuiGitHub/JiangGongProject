@@ -224,6 +224,7 @@ void app_testHandler100ms(void)
 				e_mode = MODE_WORK;
 				e_workState = WORK_OFF;
 				
+				u8_setTime = s_System.Time;
 				u8_workTime = s_System.Time;
 				u16_workTimeCounter = 0;
 			}
@@ -302,39 +303,42 @@ void app_testHandler100ms(void)
 					break;
 			}
 			
-			if(e_keyEvent == KEY_EVENT_START)
+			if(e_workState != WORK_OVER_TEMP)
 			{
-				e_mode = MODE_STANDBY;
-				drv_ledRequest(0, 0);
-			}
-			else if(e_keyEvent == KEY_EVENT_TIME_SET)
-			{
-				if(u8_keyTimeDelay)
+				if(e_keyEvent == KEY_EVENT_START)
 				{
-					u8_keyTimeDelay = 0;
-					e_modeOld = e_mode;
-					b_settingSaveFlag = TRUE;
-					e_mode = MODE_TIME_SET;
+					e_mode = MODE_STANDBY;
+					drv_ledRequest(0, 0);
 				}
-				else
+				else if(e_keyEvent == KEY_EVENT_TIME_SET)
 				{
-					u8_keyTimeDelay = 30;
-					drv_ledRequest(3, SHENGXIAWORK_TIME);
+					if(u8_keyTimeDelay)
+					{
+						u8_keyTimeDelay = 0;
+						e_modeOld = e_mode;
+						b_settingSaveFlag = TRUE;
+						e_mode = MODE_TIME_SET;
+					}
+					else
+					{
+						u8_keyTimeDelay = 30;
+						drv_ledRequest(3, SHENGXIAWORK_TIME);
+					}
 				}
-			}
-			else if(e_keyEvent == KEY_EVENT_TEMP_SET)
-			{
-				if(u8_keyTempDelay)
+				else if(e_keyEvent == KEY_EVENT_TEMP_SET)
 				{
-					u8_keyTempDelay = 0;
-					e_modeOld = e_mode;
-					b_settingSaveFlag = TRUE;
-					e_mode = MODE_TEMP_SET;
-				}
-				else
-				{
-					u8_keyTempDelay = 30;
-					drv_ledRequest(3, u8_setTemp);
+					if(u8_keyTempDelay)
+					{
+						u8_keyTempDelay = 0;
+						e_modeOld = e_mode;
+						b_settingSaveFlag = TRUE;
+						e_mode = MODE_TEMP_SET;
+					}
+					else
+					{
+						u8_keyTempDelay = 30;
+						drv_ledRequest(3, u8_setTemp);
+					}
 				}
 			}
 			
@@ -395,8 +399,15 @@ void app_testHandler100ms(void)
 			}
 			else if(drv_ledGetRequest() == 0)
 			{
+				drv_ledRequest(0, u8_setTime);
 				setTimeSave();
 				e_mode = e_modeOld;
+			}
+			else if(e_keyEvent == KEY_EVENT_START)
+			{
+				drv_ledRequest(0, u8_setTime);
+				setTimeSave();
+				e_mode = MODE_STANDBY;
 			}
 			
 			break;
@@ -454,6 +465,12 @@ void app_testHandler100ms(void)
 				setTempSave();
 				e_mode = e_modeOld;
 			}
+			else if(e_keyEvent == KEY_EVENT_START)
+			{
+				drv_ledRequest(0, u8_setTemp);
+				setTempSave();
+				e_mode = MODE_STANDBY;
+			}
 			
 			break;
 		
@@ -485,26 +502,33 @@ void app_testHandler100ms(void)
 			
 			if(temp > 50)
 			{
-				drv_scrRequest(SCR_TEST_OFF);
+				drv_scrRequest(SCR_OFF);
 				drv_ledRequest(0xFF, 0xE3);
 			}
 			else
 			{
-				if(b_agingTestFlag == 0 && temp < 48)
+				if(b_agingTestFlag == 0)
 				{
-					drv_scrRequest(SCR_TEST_FULL);
+					if(temp < 48)
+					{
+						drv_scrRequest(SCR_FULL);
+					}
+					else
+					{
+						drv_scrRequest(SCR_VVVF_OFF);
+					}
 				}
 				else
 				{
-					drv_scrRequest(SCR_TEST_OFF);
+					drv_scrRequest(SCR_OFF);
 				}
 				drv_ledRequest(0xFF, temp);
-				
-				if(e_keyEvent == KEY_EVENT_START)
-				{
-					drv_ledRequest(0, temp);
-					e_mode = MODE_STANDBY;
-				}
+			}
+			
+			if(e_keyEvent == KEY_EVENT_START)
+			{
+				drv_ledRequest(0, temp);
+				e_mode = MODE_STANDBY;
 			}
 			break;
 			

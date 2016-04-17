@@ -10,7 +10,7 @@ extern BOOL b_keyTimeSet;
 extern BOOL b_keyTempSet;
 
 void drv_ledInit(void);
-void drv_ledHandler2ms(void);
+void drv_ledHandler1ms(void);
 void drv_ledRequest(UINT8 count, UINT8 n);
 UINT8 drv_ledGetRequest(void);
 
