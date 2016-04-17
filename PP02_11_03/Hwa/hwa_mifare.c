@@ -142,6 +142,27 @@ void hwa_mifareCheckBlock(void)
 	}
 }
 
+/*
+*	写块并读出校验
+*/
+BOOL hwa_mifraeWriteBlockCheck(UINT8 *dat, UINT8 block)
+{
+	if (hwa_mifareWriteBlock(dat, block) == FALSE)
+	{
+		return FALSE;
+	}
+	if (hwa_mifareReadBlock((UINT8*)&s_TempBuff, block) == FALSE)
+	{
+		return FALSE;
+	}
+	hwa_mifareDecrypt((UINT8*)&s_TempBuff);
+	if (memcmp(dat, (UINT8*)&s_TempBuff, USE_DATA_BLOCK_LEN) != 0)
+	{
+		return FALSE;
+	}
+	return TRUE;
+}
+
 static void hwa_mifareRecoveryOldCard(UINT8 sector)
 {
 	UINT8 money;
@@ -196,60 +217,61 @@ BOOL hwa_mifareReadSector(UINT8 *dat, UINT8 sector)
 	UINT8 block = sector * 4 + NORMAL_DATA_BLOCK;
 	UINT8 blockBak = sector * 4 + BACKUP_DATA_BLOCK;
 
-	if (dat != NULL && sector > 0 && sector < 16)
+	if (dat == NULL 
+		|| sector == 0
+		|| sector >= 16)
 	{
-		if (hwa_mifareReadBlock((UINT8*)&s_NormalBuff, block) == FALSE)
-		{
-			return FALSE;
-		}
-
-		if (hwa_mifareReadBlock((UINT8*)&s_BackupBuff, blockBak) == FALSE)
-		{
-			return FALSE;
-		}
-
-		hwa_mifareCheckBlock();
-
-		if (NormalErrorFlag && BackupErrorFlag)				//正常块和备份块都校验错误
-		{
-            if(s_System.RecoveryOldCard)
-            {
-                hwa_mifareRecoveryOldCard(sector);				//兼容旧卡
-            }
-            else
-            {
-                hwa_mifareRecoveryNewCard(sector);				//兼容新卡
-            }
-			return FALSE;
-		}
-		else if (NormalErrorFlag)							//正常块校验错误
-		{
-			if (hwa_mifareWriteBlock((UINT8*)&s_BackupBuff, block) == FALSE)
-			{
-				return FALSE;
-			}
-		}
-		else if (BackupErrorFlag							//备份块校验错误
-			|| s_NormalBuff.crc[0] != s_BackupBuff.crc[0]	//正常块和备份块校验正确但数据不一样，用正常块替换备份块
-			|| s_NormalBuff.crc[1] != s_BackupBuff.crc[1]
-        )
-		{
-			if (hwa_mifareWriteBlock((UINT8*)&s_NormalBuff, blockBak) == FALSE)
-			{
-				return FALSE;
-			}
-		}
-		if (BackupErrorFlag)
-		{
-			memcpy(dat, (UINT8*)&s_NormalBuff, DATA_BLOCK_SIZE);
-		}
-		else
-		{
-			memcpy(dat, (UINT8*)&s_BackupBuff, DATA_BLOCK_SIZE);
-		}
-		return TRUE;
+		return FALSE;
 	}
-	return FALSE;
+
+	if (hwa_mifareReadBlock((UINT8*)&s_NormalBuff, block) == FALSE)
+	{
+		return FALSE;
+	}
+
+	if (hwa_mifareReadBlock((UINT8*)&s_BackupBuff, blockBak) == FALSE)
+	{
+		return FALSE;
+	}
+
+	hwa_mifareCheckBlock();
+
+	if (NormalErrorFlag && BackupErrorFlag)				//正常块和备份块都校验错误
+	{
+        if(s_System.RecoveryOldCard)
+        {
+            hwa_mifareRecoveryOldCard(sector);			//兼容旧卡
+        }
+        else
+        {
+            hwa_mifareRecoveryNewCard(sector);			//兼容新卡
+        }
+		return FALSE;
+	}
+	else if (NormalErrorFlag)							//正常块校验错误
+	{
+		if (hwa_mifraeWriteBlockCheck((UINT8*)&s_BackupBuff, block) == FALSE)
+		{
+			return FALSE;
+		}			  
+		memcpy(dat, (UINT8*)&s_BackupBuff, DATA_BLOCK_SIZE);
+	}
+	else if (BackupErrorFlag							//备份块校验错误
+		|| s_NormalBuff.crc[0] != s_BackupBuff.crc[0]	//正常块和备份块校验正确但数据不一样，用正常块替换备份块
+		|| s_NormalBuff.crc[1] != s_BackupBuff.crc[1]
+    )
+	{
+		if (hwa_mifraeWriteBlockCheck((UINT8*)&s_NormalBuff, blockBak) == FALSE)
+		{
+			return FALSE;
+		}		 
+		memcpy(dat, (UINT8*)&s_NormalBuff, DATA_BLOCK_SIZE);
+	}
+	else
+	{
+		memcpy(dat, (UINT8*)&s_NormalBuff, DATA_BLOCK_SIZE);
+	}
+	return TRUE;
 }
 
 BOOL hwa_mifareWriteSector(UINT8 *dat, UINT8 sector)
@@ -258,20 +280,24 @@ BOOL hwa_mifareWriteSector(UINT8 *dat, UINT8 sector)
 	UINT8 blockBak = sector * 4 + BACKUP_DATA_BLOCK;
 	UINT16 crc;
     BOOL falg = FALSE;
-	if (dat != NULL && sector > 0 && sector < 16)
+	if (dat == NULL 
+		|| sector == 0
+		|| sector >= 16)
 	{
-		crc = hwa_mifareCheckOut(dat, USE_DATA_BLOCK_LEN);
-		dat[USE_DATA_BLOCK_LEN] = (UINT8)(crc >> 8);
-		dat[USE_DATA_BLOCK_LEN + 1] = (UINT8)(crc & 0xFF);
-		if (hwa_mifareWriteBlock(dat, block))
-		{
-			falg = TRUE;
-		}
-		if (hwa_mifareWriteBlock(dat, blockBak))
-		{
-			falg = TRUE;
-		}
+		return FALSE;
 	}
-    return falg;
+
+	crc = hwa_mifareCheckOut(dat, USE_DATA_BLOCK_LEN);
+	dat[USE_DATA_BLOCK_LEN] = (UINT8)(crc >> 8);
+	dat[USE_DATA_BLOCK_LEN + 1] = (UINT8)(crc & 0xFF);
+
+	if (hwa_mifareWriteBlock(dat, block) == FALSE)
+	{
+		return FALSE;
+	}
+
+	hwa_mifareWriteBlock(dat, blockBak);
+
+    return TRUE;
 }
 
