@@ -10,7 +10,7 @@
 #include "stdio.h"
 
 
-UINT8 u8_LowCurrentCount[AD_CHANNEL_NUM] = {0};
+UINT16 u16_LowCurrentCount[AD_CHANNEL_NUM] = {0};
 #define OVER_CURRENT_TIME       	200     //100ms*200 = 20s
 #define OVER_CURRENT_COUNT      	4	//过流保护动作阈值
 
@@ -42,23 +42,22 @@ void app_testLowCurrentCloseHandler1s(void)
     {
         if(u16_DisplayTime[channel])
         {
-            if(app_adcGetValue(channel) < 30               //低电流门限		0~1000 ->0~4A  30约110mA
-                && u8_LowCurrentCount[channel] < 0xFF)
+            if(app_adcGetValue(channel) < 30)               //低电流门限		0~1000 ->0~4A  30约110mA
             {
-                u8_LowCurrentCount[channel]++;
-                if(u8_LowCurrentCount[channel] > 60)        //60->1分钟
+                u16_LowCurrentCount[channel]++;
+                if(u16_LowCurrentCount[channel] > 300)        //60->1分钟
                 {
             		app_timeClear(channel);
                 }
             }
             else
             {
-                u8_LowCurrentCount[channel] = 0;
+                u16_LowCurrentCount[channel] = 0;
             }
         }
         else
         {
-            u8_LowCurrentCount[channel] = 0;
+            u16_LowCurrentCount[channel] = 0;
         }
     }
 }
